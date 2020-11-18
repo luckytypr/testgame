@@ -29,6 +29,7 @@
             <tr>
               <th>Num.</th>
               <th>Name</th>
+              <th>Points</th>
               <th>Division</th>
               <th></th>
             </tr>
@@ -37,12 +38,18 @@
             <tr>
                 <td>{{ forloop.counter  }}</td>
                 <td><a href="{% url 'teams:retrieve' tournament_id=tournament.id id=participant.team.id %}">{{ participant.team.name }}</a></td>
-{#                <td>{{ participant.team.name }}</td>#}
+                <td>{{ participant.points }}</td>
                 <td>{{ participant.division }}</td>
                 <td>
-                    <form action="{% url 'tournaments:delete-participant' participant_id=participant.id id=tournament.id %}">
-                        <input type="submit" class="btn btn-danger" value="Delete" />
-                    </form>
+                    {% if tournament.current_stage == "PREPARATION" %}
+                        <form action="{% url 'tournaments:delete-participant' participant_id=participant.id id=tournament.id %}">
+                            <input type="submit" class="btn btn-danger" value="Delete" />
+                        </form>
+                    {% else %}
+                        <form action="{% url 'tournaments:delete-participant' participant_id=participant.id id=tournament.id %}">
+                            <input type="submit" class="btn btn-danger disabled" value="Delete" disabled/>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
@@ -76,7 +83,9 @@
             <br/>
         {% endif %}
 
-        {% if participants_count == 16 %}
+        {% if tournament.is_active == False %}
+            <span class="badge badge-warning">Tournament is over.</span>
+        {% elif participants_count == 16 %}
             <form action="{% url 'tournaments:group-stage-start' id=tournament.id%}">
                 <input type="submit" class="btn btn-success" value="Start tournament" />
             </form>

@@ -1,40 +1,66 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {#{% extends '' %}#}
+{% block header_content %}
 
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Sigmar+One);
+
+        body {
+            background: #3da1d1;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .congrats {
+            position: absolute;
+            top: 140px;
+            width: 550px;
+            height: 100px;
+            padding: 20px 10px;
+            text-align: center;
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+        }
+
+        h1 {
+            transform-origin: 50% 50%;
+            font-size: 50px;
+            font-family: 'Sigmar One', cursive;
+            cursor: pointer;
+            z-index: 2;
+            position: absolute;
+            top: 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .blob {
+            height: 50px;
+            width: 50px;
+            color: #ffcc00;
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            z-index: 1;
+            font-size: 30px;
+            display: none;
+        }
+    </style>
+{% endblock header_content %}
 {% block title %} Tournament listing {% endblock title %}
 
 {% block content %}
+    <div class="congrats">
+        <h1>WINNER OF {{ tournament.name }} IS {{ participant.team.name }}!</h1>
+    </div>
+    <img src="https://bit.ly/20qKWK0" style="display:none">
 
-    <h1 class="display-6">Tournament Information:</h1>
-    <h6> Id : {{ tournament.id }}</h6>
-    <h6> Name : {{ tournament.name }}</h6>
-    <h6> Stage : {{ tournament.current_stage }}</h6>
 
-    <h1 class="display-6" style="text-align: center">
-        WINNER OF {{ tournament.title }} IS {{ participant.team.name }}
-    </h1>
 
     <form action="{% url 'tournaments:list'%}">
-        <input type="submit" class="btn btn-primary" value="Back To Tournaments" />
+        <input type="submit" class="btn btn-warning" style="color: white; font-weight: bold" value="Back To Tournaments" />
     </form>
 
 {% endblock content %}
-
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#  <meta charset="UTF-8">#}
-{#  <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-{#  <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
-{##}
-{#  <title>Default title</title>#}
-{#  <title>{% block title %}{% endblock title %}</title>#}
-{#  <link rel="stylesheet" href="{% static 'styles.css' %}">#}
-{#</head>#}
-{#<body>#}
-{#    {% for name in names %}#}
-{#        <h1>This is tournaments list! {{ name }}</h1>#}
-{#        <a href="{% url 'tournaments:retrieve' id=1 %}">Leads to datail motail</a>#}
-{#    {% endfor %}#}
-{#</body>#}
-{#</html>#}

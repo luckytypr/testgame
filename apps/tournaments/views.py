@@ -74,11 +74,12 @@ def tournament_retrieve(request, id, **kwargs):
         return render(request, 'core/404.html')
 
     participants = instance.participants.all()
+    participants = sorted(participants, key=lambda m: m.points, reverse=True)
 
     return render(request, 'tournaments/tournaments_retrieve.html', {
         'tournament': instance,
         'participants': participants,
-        'participants_count': participants.count(),
+        'participants_count': len(participants),
         'new_participant': new_participant,
         'deleted_participant': deleted_participant,
     })

@@ -4,6 +4,7 @@ from . import Divisions
 from ..games.models import Game
 from ..games import WinnerStatus
 from ..core import TournamentStages
+from ..core.decorators import tournament_view
 from apps.core.utils import (
     play_group_games,
     get_division_result_matrix,
@@ -12,45 +13,36 @@ from apps.core.utils import (
 )
 
 
-def tournament_group_stage_start(request, id):
-
-    try:
-        instance = Tournament.objects.get(id=id)
-    except Tournament.DoesNotExist as e:
-        return render(request, 'core/404.html')
-
-    instance.change_stage(TournamentStages.GROUP_STAGE)
+@tournament_view
+def tournament_group_stage_start(request, tournament):
+    tournament.change_stage(TournamentStages.GROUP_STAGE)
 
     Tournament.objects.order_by()
-    first_division = instance.participants.exclude(
+    first_division = tournament.participants.exclude(
         division=Divisions.SECOND_DIVISION
     )
 
     PARTICIPANT_NUMBER_PER_DIVISION = 8
     if first_division.count() > PARTICIPANT_NUMBER_PER_DIVISION:
-        instance.participants.update(division=Divisions.NOT_ASSIGNED)
+        tournament.participants.update(division=Divisions.NOT_ASSIGNED)
         first_division = first_division.order_by('?')[:PARTICIPANT_NUMBER_PER_DIVISION]
         for participant in first_division:
             participant.division = Divisions.FIRST_DIVISION
             participant.save()
 
-    second_division = instance.participants.exclude(division=Divisions.FIRST_DIVISION)
+    second_division = tournament.participants.exclude(division=Divisions.FIRST_DIVISION)
     second_division.update(division=Divisions.SECOND_DIVISION)
 
     return render(request, 'tournaments/tournaments_group_stage.html',
                   {
-                      'tournament': instance,
+                      'tournament': tournament,
                       'first_division_participants': first_division,
                       'second_division_participants': second_division,
                   })
 
 
-def tournament_group_stage_result(request, id):
-
-    try:
-        tournament = Tournament.objects.get(id=id)
-    except Tournament.DoesNotExist as e:
-        return render(request, 'core/404.html')
+@tournament_view
+def tournament_group_stage_result(request, tournament):
 
     first_division = tournament.participants.filter(
         division=Divisions.FIRST_DIVISION
@@ -78,13 +70,8 @@ def tournament_group_stage_result(request, id):
                   })
 
 
-def tournament_playoff_start(request, id):
-
-    try:
-        tournament = Tournament.objects.get(id=id)
-    except Tournament.DoesNotExist as e:
-        return render(request, 'core/404.html')
-
+@tournament_view
+def tournament_playoff_start(request, tournament):
     preserved_participants_qs = tournament.participants.filter(in_game=True)
 
     preserved_participants = sorted(
@@ -96,11 +83,15 @@ def tournament_playoff_start(request, id):
     participants_number = len(preserved_participants)
     if participants_number == 1:
         participant = preserved_participants_qs.first()
+        tournament.is_active = False
+        tournament.save()
+
         return render(request, 'tournaments/tournaments_winner.html',
                       {
                           'tournament': tournament,
                           'participant': participant,
                       })
+
     elif participants_number % 2 == 0:
         stage_name = get_stage_name(participants_number)
         tournament.change_stage(stage_name)
@@ -136,13 +127,8 @@ def tournament_playoff_start(request, id):
         return render(request, 'core/404.html')
 
 
-def tournament_playoff_result(request, id):
-
-    try:
-        tournament = Tournament.objects.get(id=id)
-    except Tournament.DoesNotExist as e:
-        return render(request, 'core/404.html')
-
+@tournament_view
+def tournament_playoff_result(request, tournament):
     current_stage = tournament.current_stage
 
     current_games = tournament.games.filter(stage=current_stage).order_by('-right_player__team__name')

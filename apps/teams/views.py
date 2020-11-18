@@ -2,17 +2,13 @@ from .forms import TeamCreateForm
 from apps.tournaments.views import tournament_retrieve
 from apps.tournaments.models import Tournament, TournamentParticipant
 from django.shortcuts import render
-from pprint import pprint
-from .models import Team
+
 from apps.core.utils import get_required_participant_number, get_not_attended_team
+from apps.core.decorators import tournament_view, team_view
 
 
-def teams_create(request, tournament_id):
-
-    try:
-        tournament = Tournament.objects.get(id=tournament_id)
-    except Tournament.DoesNotExist:
-        return render(request, 'core/404.html')
+@tournament_view
+def teams_create(request, tournament):
 
     if request.method == "POST":
         form = TeamCreateForm(request.POST)
@@ -30,24 +26,16 @@ def teams_create(request, tournament_id):
 
             return tournament_retrieve(
                 request,
-                tournament_id,
+                tournament.id,
                 new_participant=new_participant,
             )
-
-    form = TeamCreateForm()
-
-    return render(request, 'teams/teams_create.html',
-                  {'form': form})
+    else:
+        form = TeamCreateForm()
+        return render(request, 'teams/teams_create.html', {'form': form})
 
 
-def teams_create_randomly(request, tournament_id):
-
-
-    try:
-        tournament = Tournament.objects.get(id=tournament_id)
-    except Tournament.DoesNotExist:
-        return render(request, 'core/404.html')
-
+@tournament_view
+def teams_create_randomly(request, tournament):
     participant_num = tournament.participants.count()
     required_participant_num = get_required_participant_number(participant_num)
 
@@ -63,17 +51,12 @@ def teams_create_randomly(request, tournament_id):
 
     return tournament_retrieve(
         request,
-        tournament_id,
+        tournament.id,
     )
 
 
-def teams_retrieve(request, id, tournament_id):
+@team_view
+def teams_retrieve(request, team):
+    return render(request, 'teams/teams_retrieve.html',
+                  {'team': team})
 
-    try:
-        team_instance = Team.objects.get(id=id, participantions__tournament_id=tournament_id)
-    except Team.DoesNotExist as e:
-        return render(request, 'core/404.html')
-
-    return render(request, 'teams/teams_retrieve.html', {'team': team_instance})
-
-# def tournament_team(request, tournament_id)
