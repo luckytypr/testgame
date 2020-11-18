@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+
+{% block title %} Tournament datailing {% endblock title %}
+
+{% block content %}
+
+    {% if new_participant %}
+        <div class="alert alert-success" role="alert">
+            New tournament <strong>{{ new_participant.team.name }}</strong> has been successfully created!
+        </div>
+    {% endif %}
+
+    {% if deleted_participant %}
+        <div class="alert alert-warning" role="alert">
+            Tournament <strong>{{ deleted_participant.team.name }}</strong> has been deleted!
+        </div>
+    {% endif %}
+
+    <h1 class="display-6">Tournament Information:</h1>
+    <h6> Id : {{ tournament.id }}</h6>
+    <h6> Name : {{ tournament.name }}</h6>
+    <h6> Stage : {{ tournament.current_stage }}</h6>
+
+    <h1 class="display-6">Table of participants:</h1>
+        <table class="table table-striped table-bordered table-hover">
+        <caption>List of participants</caption>
+        <thead class="thead-dark">
+            <tr>
+              <th>Num.</th>
+              <th>Name</th>
+              <th>Division</th>
+              <th></th>
+            </tr>
+        </thead>
+        {% for participant in participants %}
+            <tr>
+                <td>{{ forloop.counter  }}</td>
+                <td><a href="{% url 'teams:retrieve' tournament_id=tournament.id id=participant.team.id %}">{{ participant.team.name }}</a></td>
+{#                <td>{{ participant.team.name }}</td>#}
+                <td>{{ participant.division }}</td>
+                <td>
+                    <form action="{% url 'tournaments:delete-participant' participant_id=participant.id id=tournament.id %}">
+                        <input type="submit" class="btn btn-danger" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+
+        {% if participants_count < 16 %}
+            <form action="{% url 'teams:create' tournament_id=tournament.id %}">
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Add New Team" />
+                </div>
+            </form>
+
+           <form action="{% url 'teams:auto-create' tournament_id=tournament.id%}">
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Generate Teams Randomly" />
+                </div>
+           </form>
+
+        {% else %}
+            <form action="{% url 'teams:create' tournament_id=tournament.id %}">
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary disabled " value="Add New Team" disabled/>
+                </div>
+            </form>
+
+            <form class="form-inline" action="{% url 'teams:auto-create' tournament_id=tournament.id %}">
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary disabled " value="Generate Teams Randomly" disabled/>
+                </div>
+            </form>
+            <br/>
+        {% endif %}
+
+        {% if participants_count == 16 %}
+            <form action="{% url 'tournaments:group-stage-start' id=tournament.id%}">
+                <input type="submit" class="btn btn-success" value="Start tournament" />
+            </form>
+        {% elif  participants_count < 16  %}
+            <span class="badge badge-warning">You have not got sufficient number of teams to start the tournament. Add some more. (It's required to be 8 teams)</span>
+        {% else %}
+            <span class="badge badge-warning">You have too many teams to start tournament. Remove some of them. (It's required to be 8 teams)</span>
+        {% endif %}
+
+{% endblock content %}
+

@@ -1,0 +1,18 @@
+
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+{% load crispy_forms_tags %}
+
+{% block title %}Team creation {% endblock title %}
+
+{% block content %}
+    <h1 class="display-6">Create team-participant:</h1>
+{#        {% crispy form form.helper %}#}
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <span class="badge badge-warning">* Leave blank to automatically assign name to new team.</span>
+        <br>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px">Create</button>
+    </form>
+{% endblock content %}

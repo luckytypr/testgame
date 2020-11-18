@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+
+{% block title %} Tournament Group Stage {% endblock title %}
+
+{% block content %}
+
+    <h1 class="display-6">Tournament Group Stage:</h1>
+
+    <h3 class="display-6">Tournament:</h3>
+    <h6> Id : {{ tournament.id }}</h6>
+    <h6> Name : {{ tournament.name }}</h6>
+    <h6> Stage : {{ tournament.current_stage }}</h6>
+
+    <table class="table table-striped table-bordered table-hover" style="display: inline; float: left">
+
+        <caption>List of participants in 1st division</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th>Num.</th>
+                <th>Name</th>
+                <th>Division</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        {% for participant in first_division_participants %}
+            <tr>
+
+                <td>{{ forloop.counter  }}</td>
+                <td><a href="{% url 'teams:retrieve' tournament_id=tournament.id id=participant.team.id %}">{{ participant.team.name }}</a></td>
+                <td>{{ participant.division }}</td>
+                <td>{{ participant.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <table class="table table-striped table-bordered table-hover" style="display: inline; float: right;">
+
+        <caption>List of participants in 2nd division</caption>
+        <thead class="thead-dark">
+          <tr>
+              <th>Num.</th>
+              <th>Name</th>
+              <th>Division</th>
+              <th>Points</th>
+          </tr>
+        </thead>
+        {% for  participant in second_division_participants %}
+            <tr>
+
+                <td>{{ forloop.counter  }}</td>
+                <td><a href="{% url 'teams:retrieve' tournament_id=tournament.id id=participant.team.id %}">{{ participant.team.name }}</a></td>
+                <td>{{ participant.division }}</td>
+                <td>{{ participant.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+    <form action="{% url 'tournaments:group-stage-result'  id=tournament.id%}">
+        <input type="submit" class="btn btn-success" value="Start the Group Stage" />
+    </form>
+
+{% endblock content %}

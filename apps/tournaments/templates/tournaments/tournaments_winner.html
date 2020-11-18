@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+
+{% block title %} Tournament listing {% endblock title %}
+
+{% block content %}
+
+    <h1 class="display-6">Tournament Information:</h1>
+    <h6> Id : {{ tournament.id }}</h6>
+    <h6> Name : {{ tournament.name }}</h6>
+    <h6> Stage : {{ tournament.current_stage }}</h6>
+
+    <h1 class="display-6" style="text-align: center">
+        WINNER OF {{ tournament.title }} IS {{ participant.team.name }}
+    </h1>
+
+    <form action="{% url 'tournaments:list'%}">
+        <input type="submit" class="btn btn-primary" value="Back To Tournaments" />
+    </form>
+
+{% endblock content %}
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#  <meta charset="UTF-8">#}
+{#  <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#  <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
+{##}
+{#  <title>Default title</title>#}
+{#  <title>{% block title %}{% endblock title %}</title>#}
+{#  <link rel="stylesheet" href="{% static 'styles.css' %}">#}
+{#</head>#}
+{#<body>#}
+{#    {% for name in names %}#}
+{#        <h1>This is tournaments list! {{ name }}</h1>#}
+{#        <a href="{% url 'tournaments:retrieve' id=1 %}">Leads to datail motail</a>#}
+{#    {% endfor %}#}
+{#</body>#}
+{#</html>#}

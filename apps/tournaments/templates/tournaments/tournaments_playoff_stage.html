@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+
+{% block title %} Tournament Group Stage {% endblock title %}
+
+{% block content %}
+
+    <h1 class="display-6">Playoff Games:</h1>
+
+    <h3 class="display-6">Tournament:</h3>
+    <h6> Id : {{ tournament.id }}</h6>
+    <h6> Name : {{ tournament.name }}</h6>
+    <h6> Current Stage : {{ tournament.current_stage }}</h6>
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Num.</th>
+                <th>Right player</th>
+                <th>Left player</th>
+                <th>Stage</th>
+                <th>Right player Score</th>
+                <th>Left player Score</th>
+                <th>Winner</th>
+            </tr>
+        </thead>
+        {% for game in games %}
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+                <td>{{ game.right_player.team.name }}</td>
+                <td>{{ game.left_player.team.name }}</td>
+                <td>{{ game.stage }}</td>
+                <td>{{ game.right_player_score }}</td>
+                <td>{{ game.left_player_score }}</td>
+                <td>{{ game.winner }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+
+
+    <form action="{% url 'tournaments:playoff-result' id=tournament.id%}">
+        <input type="submit" class="btn btn-success" value="Start the Play Off Stage" />
+    </form>
+
+{% endblock content %}

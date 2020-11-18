@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+
+{% block title %} Tournament listing {% endblock title %}
+
+{% block content %}
+    {% if new_tournament %}
+        <div class="alert alert-success" role="alert">
+            New tournament <strong>{{ new_tournament.name }}</strong> has been successfully created!
+        </div>
+    {% endif %}
+
+    {% if deleted_tournament %}
+        <div class="alert alert-warning" role="alert">
+            Tournament <strong>{{ deleted_tournament.name }}</strong> has been deleted!
+        </div>
+    {% endif %}
+
+    <h1 class="display-6">Table of tournaments:</h1>
+    <table class="table table-striped table-bordered table-hover">
+
+        <caption>List of tournaments</caption>
+        <thead class="thead-dark">
+          <tr>
+            <th>Num.</th>
+            <th>Name</th>
+            <th>Stage</th>
+            <th>Is Active</th>
+            <th></th>
+          </tr>
+        </thead>
+        {% for tournament in tournaments %}
+            <tr>
+
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="{% url 'tournaments:retrieve' id=tournament.id %}">{{ tournament.name }}</a></td>
+                    <td>{{ tournament.current_stage }}</td>
+                    <td>{{ tournament.is_active }}</td>
+                    <td>
+                    <form action="{% url 'tournaments:delete' id=tournament.id %}">
+                        <input type="submit" class="btn btn-danger" value="Delete" />
+                    </form>
+                    </td>
+            </tr>
+
+        {% endfor %}
+    </table>
+
+    <form action="{% url 'tournaments:create'%}">
+        <input type="submit" class="btn btn-primary" value="Create New Tournament" />
+    </form>
+
+{% endblock content %}
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#  <meta charset="UTF-8">#}
+{#  <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#  <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
+{##}
+{#  <title>Default title</title>#}
+{#  <title>{% block title %}{% endblock title %}</title>#}
+{#  <link rel="stylesheet" href="{% static 'styles.css' %}">#}
+{#</head>#}
+{#<body>#}
+{#    {% for name in names %}#}
+{#        <h1>This is tournaments list! {{ name }}</h1>#}
+{#        <a href="{% url 'tournaments:retrieve' id=1 %}">Leads to datail motail</a>#}
+{#    {% endfor %}#}
+{#</body>#}
+{#</html>#}

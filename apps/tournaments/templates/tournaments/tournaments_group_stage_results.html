@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+{#{% extends '' %}#}
+
+{% block title %} Tournament Group Stage {% endblock title %}
+
+{% block content %}
+
+    <h1 class="display-6">Tournament Group Stage Results:</h1>
+
+    <h3 class="display-6">Tournament:</h3>
+    <h6> Id : {{ tournament.id }}</h6>
+    <h6> Name : {{ tournament.name }}</h6>
+    <h6> Stage : {{ tournament.current_stage }}</h6>
+
+
+    <h3 class="display-6" style="text-align: center">First Division Results:</h3>
+    <table class="table table-striped table-bordered table-hover" style="display: inline; float: left">
+
+        <thead class="thead-dark">
+            <tr>
+                <th></th>
+                {% for participant in first_division_participants %}
+                    {% if participant.in_game %}
+                        <th scope="col">{{ participant.team.name }}</th>
+                    {% else %}
+                        <th scope="col" style="background: #6a6f73; color:#45484d">{{ participant.team.name }} (eliminated)</th>
+                    {%  endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+            {% for result_row in first_division_matrix %}
+                <tr>
+                    {% if result_row.participant_in_game %}
+                        <th class="dark" scope="row" style="background: #31373e; color:white">{{ result_row.participant_name }}</th>
+                    {% else %}
+                        <th scope="col" style="background: #6a6f73; color:#45484d">{{ result_row.participant_name }} (eliminated)</th>
+                    {%  endif %}
+
+                    {% for result_cell in result_row.games %}
+
+                        {% if result_cell.self %}
+                            <td class="dark" style="background: #31373e"></td>
+                        {% else %}
+                            <td>
+                                {{ result_cell.left_score }}
+                                {{ result_cell.right_score }}
+                                {{ result_cell.winner }}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+    </table>
+
+    <h3 class="display-6" style="text-align: center">Second Division Results:</h3>
+     <table class="table table-striped table-bordered table-hover" style="display: inline; float: left">
+
+        <thead class="thead-dark">
+            <tr>
+                <th></th>
+                {% for participant in second_division_participants %}
+                    {% if participant.in_game %}
+                        <th scope="col">{{ participant.team.name }}</th>
+                    {% else %}
+                        <th scope="col" style="background: #6a6f73; color:#45484d">{{ participant.team.name }} (eliminated)</th>
+                    {%  endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+            {% for result_row in second_division_matrix %}
+                <tr>
+                    {% if result_row.participant_in_game %}
+                        <th class="dark" scope="row" style="background: #31373e; color:white">{{ result_row.participant_name }}</th>
+                    {% else %}
+                        <th scope="col" style="background: #6a6f73; color:#45484d">{{ result_row.participant_name }} (eliminated)</th>
+                    {%  endif %}
+
+                    {% for result_cell in result_row.games %}
+
+                        {% if result_cell.self %}
+                            <td class="dark" style="background: #31373e"></td>
+                        {% else %}
+                            <td>
+                                {{ result_cell.left_score }}
+                                {{ result_cell.right_score }}
+                                {{ result_cell.winner }}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+    </table>
+
+    <form action="{% url 'tournaments:playoff-start' id=tournament.id%}">
+        <input type="submit" class="btn btn-success" value="Start the Play Off Stage" />
+    </form>
+
+{% endblock content %}
