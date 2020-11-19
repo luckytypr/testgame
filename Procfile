@@ -1,1 +1,1 @@
-web: gunicorn testgame.config.wsgi
+web: gunicorn config.wsgi
