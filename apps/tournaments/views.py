@@ -1,23 +1,16 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.urls import reverse
-from .models import Tournament, TournamentParticipant
+
 from .forms import TournamentCreateForm
-from pprint import pprint
+from .models import Tournament, TournamentParticipant
 
 
 def tournament_list(request, *args, **kwargs):
-    # names = ['bob', 'marley', 'queen']
-    # is_expired = False
     tournaments = Tournament.objects.all()
-
     new_tournament = None
     if request.method == "POST":
         form = kwargs.get('form', None)
         if form is not None:
             new_tournament = form.instance
-            # pprint(form.data)
-            # pprint(form.)
 
     deleted_tournament = kwargs.get('deleted_tournament', None)
 
