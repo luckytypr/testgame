@@ -30,7 +30,7 @@ SECRET_KEY = 'c7bj2_y(xvrk_pwnw(#%zeq!d7jb)f!0zyk3_km8@@gr%)=ggq'
 DEBUG = True
 
 # ALLOWED_HOSTS = ['0.0.0.0']
-ALLOWED_HOSTS = ['luckytypertestgame.herokuapp.com/']  # TODO: NOT SECURE, ONLY FOR TESTING PURPOSE
+ALLOWED_HOSTS = ['luckytypertestgame.herokuapp.com']  # TODO: NOT SECURE, ONLY FOR TESTING PURPOSE
 
 
 # Application definition
